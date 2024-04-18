@@ -2,32 +2,19 @@ import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CommentPage = ({ route }) => {
   const { postId, userId, username } = route.params;
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  // const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     fetchComments();
   }, []);
 
-  // const retrieveUserId = async () => {
-  //   try {
-  //     const storedUserId = await AsyncStorage.getItem('userId');
-  //     if (storedUserId !== null) {
-  //       setUserId(parseInt(storedUserId));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error retrieving user ID:", error);
-  //   }
-  // };
-
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`http://192.168.0.107:3000/posts/${postId}/comments`);
+      const response = await axios.get(`http://192.168.0.105:3000/posts/${postId}/comments`);
       console.log("Fetched comments:", response.data); // Log the fetched comments
       setComments(response.data);
     } catch (error) {
@@ -37,12 +24,12 @@ const CommentPage = ({ route }) => {
 
   const handleAddComment = async () => {
     try {
-      await axios.post(`http://192.168.76.54:3000/posts/${postId}/comments`, {
-        user_id: userId, // Pass the user_id
+      await axios.post(`http://192.168.0.105:3000/posts/${postId}/comments`, {
+        user_id: userId, 
         content: newComment
       });
-      setNewComment(""); // Clear the input field
-      fetchComments(); // Fetch updated comments
+      setNewComment(""); 
+      fetchComments();
     } catch (error) {
       console.error("Error adding comment:", error);
     }
@@ -55,7 +42,7 @@ const CommentPage = ({ route }) => {
      <Text style={styles.commentUser}>{item.username}  </Text>
     
     <Text style={styles.commentContent}>{item.content}</Text>  
-    <Text style={styles.commentUser}>{item.created_at}  </Text>    
+    {/* <Text style={styles.commentUser}>{item.created_at}  </Text>     */}
     </View>
   );
 
@@ -96,7 +83,10 @@ const styles = StyleSheet.create({
   },
   commentUser: {
     fontSize: 14,
-    color: "#888888",
+    color: "green",
+    fontWeight:"600",
+    fontSize: 19,
+    marginBottom:10
   },
   addCommentContainer: {
     flexDirection: "row",

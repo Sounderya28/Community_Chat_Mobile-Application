@@ -218,7 +218,6 @@ def get_comments(post_id):
 
 
 
-
 @app.route('/posts/<int:post_id>/comments', methods=['POST'])
 def create_comment(post_id):
     data = request.json
@@ -248,9 +247,24 @@ def get_user(user_id):
         }), 200
     else:
         return jsonify({'message': 'User not found'}), 404
+    
+@app.route('/posts/<int:post_id>/like', methods=['DELETE'])
+def unlike_post(post_id):
+    data = request.json
+    user_id = data.get('user_id')
+
+    existing_like = Likes.query.filter_by(post_id=post_id, user_id=user_id).first()
+    if not existing_like:
+        return jsonify({'message': 'You have not liked this post yet'}), 400
+
+    db.session.delete(existing_like)
+    db.session.commit()
+
+    return jsonify({'message': 'Post unliked successfully'}), 200
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(host='192.168.0.107', port=3000, debug=True)
+    app.run(host='192.168.0.105', port=3000, debug=True)
 
 

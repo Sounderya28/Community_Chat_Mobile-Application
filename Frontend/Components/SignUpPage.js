@@ -32,7 +32,7 @@ const SignUp = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.0.107:3000/signup', {
+      const response = await axios.post('http://192.168.0.105:3000/signup', {
         name,
         email,
         password,
@@ -102,7 +102,7 @@ const SignUp = ({ navigation }) => {
       </TouchableOpacity>
       <View style={styles.bottomImageContainer}>
         <Image
-          source={require('../assets/Home page image.png')} // Replace with your image path
+          source={require('../assets/Home page image.png')} 
           style={styles.bottomImage}
         />
       </View>

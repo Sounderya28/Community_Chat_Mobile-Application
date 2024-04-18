@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  ActivityIndicator
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
@@ -32,11 +33,11 @@ const PostListPage = ({ navigation, route }) => {
     };
 
     retrieveLikedPosts();
-  }, [userId]); // Re-fetch liked posts when userId changes
+  }, [userId]);
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get("http://192.168.0.107:3000/posts");
+      const response = await axios.get("http://192.168.0.105:3000/posts");
       setPosts(response.data);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -68,7 +69,7 @@ const PostListPage = ({ navigation, route }) => {
           text: "Delete",
           onPress: () => {
             axios
-              .delete(`http://192.168.0.107:3000/posts/${postId}`)
+              .delete(`http://192.168.0.105:3000/posts/${postId}`)
               .then((response) => {
                 Alert.alert("Success", response.data.message);
                 fetchPosts();
@@ -92,24 +93,44 @@ const PostListPage = ({ navigation, route }) => {
     );
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleLikePost = async (postId) => {
     try {
       const isLiked = likedPosts.includes(postId);
 
-      if (!isLiked) {
-        setLikedPosts([...likedPosts, postId]); // Update local state first
-        await axios.post(`http://192.168.0.107:3000/posts/${postId}/like`, {
-          user_id: userId,
+      if (isLiked) {
+        // Unlike the post
+        const updatedLikedPosts = likedPosts.filter((id) => id !== postId);
+
+        setLikedPosts(updatedLikedPosts);
+        await axios.delete(`http://192.168.0.105:3000/posts/${postId}/like`, {
+          data: { user_id: userId },
         });
-        fetchPosts(); // Update UI with the latest data
         await AsyncStorage.setItem(
           `likedPosts-${userId}`,
-          JSON.stringify([...likedPosts, postId])
-        ); // Store for persistence
+          JSON.stringify(updatedLikedPosts)
+        );
+        fetchPosts();
+      } else {
+        setIsLoading(true);
+        // Like the post
+        const updatedLikedPosts = [...likedPosts, postId];
+
+        setLikedPosts(updatedLikedPosts);
+        await axios.post(`http://192.168.0.105:3000/posts/${postId}/like`, {
+          user_id: userId,
+        });
+        await AsyncStorage.setItem(
+          `likedPosts-${userId}`,
+          JSON.stringify(updatedLikedPosts)
+        );
+        fetchPosts();
       }
     } catch (error) {
-      console.error("Error liking post:", error);
+      console.error("Error toggling like:", error);
     }
+    setIsLoading(false);
   };
 
   const handleCommentPost = (postId) => {
@@ -136,17 +157,21 @@ const PostListPage = ({ navigation, route }) => {
       </View>
       <Text>{item.content}</Text>
       <View style={styles.postActions}>
-        <TouchableOpacity
-          onPress={() => handleLikePost(item.id)}
-          style={{ flexDirection: "row" }}
-        >
-          <Ionicons
-            name={likedPosts.includes(item.id) ? "heart" : "heart-outline"}
-            size={24}
-            color={likedPosts.includes(item.id) ? "red" : "black"}
-          />
-          <Text style={{ marginRight: "2%" }}>{item.likes_count}</Text>
-        </TouchableOpacity>
+      <TouchableOpacity
+  onPress={() => handleLikePost(item.id)}
+  style={{ flexDirection: "row" }}
+>
+  {isLoading ? (
+    <ActivityIndicator size="small" color="gray" />
+  ) : (
+    <Ionicons
+      name={likedPosts.includes(item.id) ? "heart" : "heart-outline"}
+      size={24}
+      color={likedPosts.includes(item.id) ? "red" : "black"}
+    />
+  )}
+  <Text style={{ marginRight: "2%" }}>{item.likes_count}</Text>
+</TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => handleCommentPost(item.id)}

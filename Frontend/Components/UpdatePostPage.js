@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import axios from 'axios';
 
 const UpdatePostPage = ({ navigation, route }) => {
-  const { postId, userId } = route.params; // Assuming postId and userId are passed as props from the navigation
+  const { postId, userId } = route.params; 
 
   const [content, setContent] = useState('');
 
@@ -13,8 +13,8 @@ const UpdatePostPage = ({ navigation, route }) => {
 
   const fetchPost = async () => {
     try {
-      const response = await axios.get(`http://192.168.0.107:3000/posts/${postId}`);
-      setContent(response.data.content); // Set the content of the fetched post in the state
+      const response = await axios.get(`http://192.168.0.105:3000/posts/${postId}`);
+      setContent(response.data.content); 
     } catch (error) {
       console.error('Error fetching post:', error);
     }
@@ -22,9 +22,9 @@ const UpdatePostPage = ({ navigation, route }) => {
 
   const handleUpdatePost = async () => {
     try {
-      await axios.put(`http://192.168.0.107:3000/posts/${postId}`, { content });
+      await axios.put(`http://192.168.0.105:3000/posts/${postId}`, { content });
       console.log('Post updated successfully');
-      navigation.goBack(); // Navigate back to the previous screen (PostListPage)
+      navigation.goBack(); 
     } catch (error) {
       console.error('Error updating post:', error);
     }
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20,
-    textAlignVertical: 'top', // Align text to top in multiline input
+    textAlignVertical: 'top', 
   },
   addButton: {
     backgroundColor: '#009B4C',

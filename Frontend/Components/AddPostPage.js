@@ -3,15 +3,15 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import axios from 'axios';
 
 const AddPostPage = ({ navigation, route }) => {
-  const { userId } = route.params; // Assuming userId is passed as a prop from the navigation
+  const { userId } = route.params;
 
   const [content, setContent] = useState('');
 
   const handleAddPost = async () => {
     try {
-      await axios.post('http://192.168.0.107:3000/posts', { user_id: userId, content });
+      await axios.post('http://192.168.0.105:3000/posts', { user_id: userId, content });
       console.log('Post added successfully');
-      navigation.goBack();// Navigate back to the PostListPage
+      navigation.goBack();
     } catch (error) {
       console.error('Error adding post:', error);
     }
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20,
-    textAlignVertical: 'top', // Align text to top in multiline input
+    textAlignVertical: 'top', 
   },
   addButton: {
     backgroundColor: '#009B4C',

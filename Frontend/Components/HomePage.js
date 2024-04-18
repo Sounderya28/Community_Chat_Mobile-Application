@@ -9,7 +9,7 @@ const HomePage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/Home page logo.png')} // Replace with your image path
+        source={require('../assets/Home page logo.png')} 
         style={styles.image}
       />
       <Text style={styles.text}>Farming is the Profession of Hope</Text>
@@ -18,7 +18,7 @@ const HomePage = ({ navigation }) => {
       </TouchableOpacity>
       <View style={styles.bottomImageContainer}>
         <Image
-          source={require('../assets/Home page image.png')} // Replace with your image path
+          source={require('../assets/Home page image.png')} 
           style={styles.bottomImage}
         />
       </View>
